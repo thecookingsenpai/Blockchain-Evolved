@@ -1,0 +1,75 @@
+apt update
+
+apt install default-jre -y
+apt install default-jdk -y
+
+wget https://hyperledger.jfrog.io/artifactory/besu-binaries/besu/22.7.0/besu-22.7.0.tar.gz
+
+tar -xvf besu-22.7.0.tar.gz
+
+besu-22.7.0/bin/besu operator generate-blockchain-config --config-file=qbftConfigFile.json --to=networkFiles --private-key-file-name=key
+
+copy the keys in the directories
+move files to other nodes
+set min gas price below as you wish (this is 10 gwei)
+
+../besu-22.7.0/bin/besu --data-storage-format=BONSAI --data-path=data --genesis-file=genesis.json --rpc-http-host=0.0.0.0 --rpc-http-port=8104 --rpc-http-enabled --rpc-http-api=ETH,NET,QBFT --host-allowlist="*" --rpc-http-cors-origins="all" --p2p-port=30104 --min-gas-price=0 
+copy the enode url
+go to the other nodes
+same but with
+
+--bootnodes=enodeurl
+
+=====
+
+Specific values:
+
+enode urls:
+
+Node-0:
+enode://c83ad88b60ec54250c51ac4536eaac011253f8bd4ddaa052c2ad16c929158e4a24b8e026692db890e379c3f840594480826b16eee6c88cd4e2e3560d95acd8a1@194.163.162.1:30304
+
+Node-1:
+enode://a7228d0b698e35145db2f8fa5fddb28bf037da275a0e6e60005c68a018bbc6e9d8520898d206b749c4337b66bf567337a2b627e858af6b4241e197b4b7549e5b@161.97.171.146:30304
+
+Node-2:
+enode://513318be80688a3eec4c9bf79e67efe1fa705cb93177b9140ef9ec93f8078bd89d05b9e9b1daab4e2779e60df20f0d6154b9c5203d2ef1fddf2f15b3da22038a@109.205.183.157:30304
+
+Node-3:
+enode://2a2cf5d28b85692b4b9ef04247df366a86c884d5ecb8f654373be69268f0432c8b6dfbc8f910fbdd192b42c049071275bf2f67038b76c86053ac444dba049503@193.187.129.116:30304
+
+-----------------------
+
+Node-0 as bootnode:
+
+--bootnodes=--bootnodes=enode://c83ad88b60ec54250c51ac4536eaac011253f8bd4ddaa052c2ad16c929158e4a24b8e026692db890e379c3f840594480826b16eee6c88cd4e2e3560d95acd8a1@194.163.162.1:30304
+
+All nodes as bootnodes:
+
+--bootnodes=enode://c83ad88b60ec54250c51ac4536eaac011253f8bd4ddaa052c2ad16c929158e4a24b8e026692db890e379c3f840594480826b16eee6c88cd4e2e3560d95acd8a1@194.163.162.1:30304,enode://a7228d0b698e35145db2f8fa5fddb28bf037da275a0e6e60005c68a018bbc6e9d8520898d206b749c4337b66bf567337a2b627e858af6b4241e197b4b7549e5b@161.97.171.146:30304,enode://513318be80688a3eec4c9bf79e67efe1fa705cb93177b9140ef9ec93f8078bd89d05b9e9b1daab4e2779e60df20f0d6154b9c5203d2ef1fddf2f15b3da22038a@109.205.183.157:30304,enode://2a2cf5d28b85692b4b9ef04247df366a86c884d5ecb8f654373be69268f0432c8b6dfbc8f910fbdd192b42c049071275bf2f67038b76c86053ac444dba049503@193.187.129.116:30304
+
+-----------------------
+
+=====
+
+To wipe and restart:
+
+rm -rf data/database data/caches data/DATABASE_METADATA.json
+../besu-22.7.0/bin/besu --data-path=data --genesis-file=../genesis.json --rpc-http-host=0.0.0.0 --rpc-http-port=8811 --rpc-http-enabled --rpc-http-api=ETH,NET,QBFT --host-allowlist="*" --rpc-http-cors-origins="all" --p2p-port=30304 --min-gas-price=1000000000000000000 --bootnodes=enode://c83ad88b60ec54250c51ac4536eaac011253f8bd4ddaa052c2ad16c929158e4a24b8e026692db890e379c3f840594480826b16eee6c88cd4e2e3560d95acd8a1@194.163.162.1:30304,enode://a7228d0b698e35145db2f8fa5fddb28bf037da275a0e6e60005c68a018bbc6e9d8520898d206b749c4337b66bf567337a2b627e858af6b4241e197b4b7549e5b@161.97.171.146:30304,enode://513318be80688a3eec4c9bf79e67efe1fa705cb93177b9140ef9ec93f8078bd89d05b9e9b1daab4e2779e60df20f0d6154b9c5203d2ef1fddf2f15b3da22038a@109.205.183.157:30304,enode://2a2cf5d28b85692b4b9ef04247df366a86c884d5ecb8f654373be69268f0432c8b6dfbc8f910fbdd192b42c049071275bf2f67038b76c86053ac444dba049503@193.187.129.116:30304
+
+=====
+
+To start locally
+
+../besu-22.7.0/bin/besu --data-path=data --genesis-file=../genesis.json --rpc-http-host=127.0.0.1 --rpc-http-port=8811 --rpc-http-enabled --rpc-http-api=ETH,NET,QBFT --host-allowlist="*" --rpc-http-cors-origins="all" --p2p-port=30304 --min-gas-price=1000000000000000000 --bootnodes=enode://c83ad88b60ec54250c51ac4536eaac011253f8bd4ddaa052c2ad16c929158e4a24b8e026692db890e379c3f840594480826b16eee6c88cd4e2e3560d95acd8a1@194.163.162.1:30304,enode://a7228d0b698e35145db2f8fa5fddb28bf037da275a0e6e60005c68a018bbc6e9d8520898d206b749c4337b66bf567337a2b627e858af6b4241e197b4b7549e5b@161.97.171.146:30304,enode://513318be80688a3eec4c9bf79e67efe1fa705cb93177b9140ef9ec93f8078bd89d05b9e9b1daab4e2779e60df20f0d6154b9c5203d2ef1fddf2f15b3da22038a@109.205.183.157:30304,enode://2a2cf5d28b85692b4b9ef04247df366a86c884d5ecb8f654373be69268f0432c8b6dfbc8f910fbdd192b42c049071275bf2f67038b76c86053ac444dba049503@193.187.129.116:30304
+
+
+=====
+
+With env variables
+
+export HOST_RPC=0.0.0.0
+export PORT_RPC=8811
+export BOOTNODES='enode://c83ad88b60ec54250c51ac4536eaac011253f8bd4ddaa052c2ad16c929158e4a24b8e026692db890e379c3f840594480826b16eee6c88cd4e2e3560d95acd8a1@194.163.162.1:30304,enode://a7228d0b698e35145db2f8fa5fddb28bf037da275a0e6e60005c68a018bbc6e9d8520898d206b749c4337b66bf567337a2b627e858af6b4241e197b4b7549e5b@161.97.171.146:30304,enode://513318be80688a3eec4c9bf79e67efe1fa705cb93177b9140ef9ec93f8078bd89d05b9e9b1daab4e2779e60df20f0d6154b9c5203d2ef1fddf2f15b3da22038a@109.205.183.157:30304,enode://2a2cf5d28b85692b4b9ef04247df366a86c884d5ecb8f654373be69268f0432c8b6dfbc8f910fbdd192b42c049071275bf2f67038b76c86053ac444dba049503@193.187.129.116:30304'
+
+../besu-22.7.0/bin/besu --data-path=data --genesis-file=../genesis.json --rpc-http-host=$HOST_RPC --rpc-http-port=$PORT_RPC --rpc-http-enabled --rpc-http-api=ETH,NET,QBFT --host-allowlist="*" --rpc-http-cors-origins="all" --p2p-port=30304 --min-gas-price=1000000000000000000 --bootnodes=$BOOTNODES

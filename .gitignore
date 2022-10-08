@@ -1,0 +1,12 @@
+
+.DS_Store
+
+_Base Contracts/solidity-evolved/LICENSE.md
+
+_Base Contracts/solidity-evolved/README.md
+
+artifacts/
+
+create-a-chain/data/
+
+hardhad_configurator.py
